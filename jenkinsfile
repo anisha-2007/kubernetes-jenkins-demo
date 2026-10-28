@@ -1,0 +1,24 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Code is checked out from GitHub'
+            }
+        }
+
+        stage('Verify Kubernetes') {
+            steps {
+                bat 'kubectl get nodes'
+            }
+        }
+
+        stage('Deploy Application') {
+            steps {
+                bat 'kubectl apply -f k8s/deployment.yaml'
+                bat 'kubectl rollout status deployment/web-deployment --timeout=120s'
+            }
+        }
+    }
+}
